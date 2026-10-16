@@ -411,7 +411,7 @@ export async function getLeaderboard(
 
   const result = await query<LeaderboardSession>(
     `SELECT gs.*,
-            u.email AS username,
+            u.username AS username,
             u.avatar_url,
             u.display_name,
             u.league,
@@ -488,7 +488,7 @@ export async function getLeaderboardForCsvExport(
             gs.user_id,
             gs.total_score,
             gs.completed_at,
-            u.email AS username,
+            u.username AS username,
             u.display_name,
             COALESCE((p.amount_stroops::numeric / 10000000)::numeric(20,7)::text, '0') AS payout_amount_usdc
      FROM game_sessions gs
@@ -529,7 +529,7 @@ export async function getTopSessionsPerChallenge(
   const result = await query<LeaderboardSession & { challenge_rank: number }>(
     `WITH ranked AS (
        SELECT gs.*,
-              u.email AS username,
+              u.username AS username,
               u.avatar_url,
               u.display_name,
               u.league,
@@ -813,7 +813,7 @@ export async function getArchivedLeaderboard(
   params.push(limit);
 
   const result = await query<GameSession & { username: string; avatar_url: string }>(
-    `SELECT gs.*, u.email as username, u.avatar_url
+    `SELECT gs.*, u.username as username, u.avatar_url
      FROM game_sessions_archive gs
      JOIN users u ON gs.user_id = u.id
      WHERE gs.challenge_id = $1

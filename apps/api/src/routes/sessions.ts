@@ -307,8 +307,11 @@ router.post(
     }
 
     // Double answer check
-    const existingScores = (session as any).scores || [];
-    if (existingScores.some((s: any) => s.round === round)) {
+    const alreadyAnswered =
+      round === 1 ? session.round_1_answer != null
+      : round === 2 ? session.round_2_answer != null
+      : session.round_3_answer != null;
+    if (alreadyAnswered) {
       throw createError("Round already answered", 400);
     }
 

@@ -83,7 +83,11 @@ router.post("/", optionalAuth, waitlistLimiter, async (req, res) => {
 router.get("/position/:email", apiLimiter, async (req, res) => {
   const email = z.string().email().parse(req.params.email);
   const result = await query<{ position: number }>(
-    "SELECT position FROM waitlist_signups WHERE email = $1",
+    `SELECT position FROM (
+       SELECT email, ROW_NUMBER() OVER (ORDER BY created_at ASC) AS position
+       FROM waitlist
+     ) w
+     WHERE email = $1`,
     [email.toLowerCase().trim()]
   );
 
